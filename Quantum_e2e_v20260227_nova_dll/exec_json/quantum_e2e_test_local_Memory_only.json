@@ -1,0 +1,13 @@
+{
+"test_object":"Quantum E2E",
+"test_category":"",
+"model base":"",
+"model_version_name": "v1016",
+"task_id":"111111111111111111111111111",
+"version": "test-model-1030.zip",
+"dataset":"test",
+"dataset_file_name":"test.zip",
+"root_path":"C:\\Users\\1\\Desktop\\LRIA_1lm_eval\\eval",
+"node_type": "dGPU",
+"optional": "{\"test_set_file\": \"Quantum_e2e_v20260106.zip\", \"process\": [\"Memory\"], \"cycle\": \"1\", \"test_mode\": [\"local\"]}"
+}
