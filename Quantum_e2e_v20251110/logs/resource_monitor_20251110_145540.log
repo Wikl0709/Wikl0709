@@ -1,0 +1,5 @@
+2025-11-10 14:56:30,820 - utils.monitor_util - INFO - c:\Users\XiaoXinPro 16 IAH\Desktop\LRIA_llm_eval\eval\Quantum_e2e_v20251106\resource\resource_20251110_145540.csv
+2025-11-10 14:56:30,820 - utils.monitor_util - INFO - Detected GPU type: iGPU
+2025-11-10 14:56:30,821 - utils.monitor_util - INFO - Selected monitor method: monitor_iGPU
+2025-11-10 14:56:30,824 - utils.monitor_util - INFO - Monitor thread started: True
+2025-11-10 15:01:29,304 - utils.monitor_util - INFO - Monitor thread stopped: False

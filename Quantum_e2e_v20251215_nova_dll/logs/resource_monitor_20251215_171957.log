@@ -1,0 +1,5 @@
+2025-12-15 17:19:58,007 - utils.monitor_util - INFO - c:\Users\obe\Desktop\LRIA_llm_eval\eval\Quantum_e2e_v20251215_nova_dll\resource\resource_20251215_171957.csv
+2025-12-15 17:19:58,008 - utils.monitor_util - INFO - Detected GPU type: aGPU
+2025-12-15 17:19:58,334 - utils.monitor_util - INFO - Selected monitor method: monitor_aGPU
+2025-12-15 17:19:58,336 - utils.monitor_util - INFO - Monitor thread started: True
+2025-12-15 17:22:34,035 - utils.monitor_util - INFO - Monitor thread stopped: False
