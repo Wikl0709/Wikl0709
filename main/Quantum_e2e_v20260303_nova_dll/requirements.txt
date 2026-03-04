@@ -1,0 +1,14 @@
+# 使用清华源安装: pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple/
+pandas
+openpyxl
+psutil
+nvidia-ml-py
+colorama
+pywin32
+requests
+tqdm
+openai
+azure-identity
+pythonnet
+tenacity
+wmi
