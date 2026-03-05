@@ -894,8 +894,8 @@ class MultimodalAPI:
                         logger.info(f"重跑第 {row_index + 1} 行, 列 '{column_name}' 失败")
                         round_had_failure = True
                         
-                        # 检查重跑是否也是 "failed" 错误
-                        failure_message = "重跑失败"
+                        # 检查重跑是否也是 "failed" 错误，有则写详细原因；否则写「查询发送失败」以便下一轮重跑不会误跳过
+                        failure_message = "查询发送失败"
                         if hasattr(memory_api, 'data_json_list') and memory_api.data_json_list:
                             latest_failure = None
                             for entry in reversed(memory_api.data_json_list):
