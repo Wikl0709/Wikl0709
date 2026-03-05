@@ -1,0 +1,6 @@
+{
+"version": "v20260225",
+"test_mode":"local",
+"device_type": "NVIDIA 5060",
+"device_model": "Legion Pro 5 16 IRX9"
+}

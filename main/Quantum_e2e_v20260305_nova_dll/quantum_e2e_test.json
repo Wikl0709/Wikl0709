@@ -1,0 +1,14 @@
+{
+    "scope": "",
+    "test_object": "Quantum E2E",
+    "test_category": "",
+    "model_base": "",
+    "model_version_name": "sdff",
+    "task_id": "136529647830563030268013008364025251511",
+    "node_type": "dGPU",
+    "version": "Quantum_Test.zip",
+    "dataset": "",
+    "dataset_file_name": "Quantum_e2e_20260114.zip",
+    "optional": "{\"test_set_file\": \"Quantum_e2e_20260114.zip\", \"process\": [\"All\"], \"cycle\": 1, \"test_mode\": [\"cloud\"]}",
+    "root_path": "C:\\Users\\yangl\\Desktop\\LRIA_llm_eval\\eval"
+}
