@@ -6,7 +6,7 @@ from overall_checkv3 import *
 from memory_retrieval_judge import *
 from KB_retrieval_judge import *
 from excel_colored import *
-from summary_v12 import *
+from summary_v13 import *
 import datetime
 import Auto_Judge
 from pathlib import Path
@@ -376,13 +376,17 @@ def process_pipeline(input_excel_path, result_dir, modules=['all']):
     
     # 步骤5-7: 其他通用处理
     # 步骤5: 整理最终结果
+    
+    
     output_reordered_path = step_finalize_results(current_input, output_final_path)
     if not output_reordered_path:
         print("✗ 整理最终结果失败，继续流程")
         
     
     # 步骤6: 生成汇总
-    output_summary_path = output_final_path.replace("_Final.xlsx", "_summary.xlsx")
+    if not os.path.exists(output_final_path):
+        output_final_path = output_predeal_path
+    output_summary_path = output_final_path.replace("_Final.xlsx", "_summary.xlsx").replace("_predeal.xlsx", "_summary.xlsx")
     step_generate_summary(output_final_path, output_summary_path)
     
     # 步骤7: Excel格式化

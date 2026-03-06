@@ -98,6 +98,7 @@ def load_scene_module(scene_name):
     except ImportError as e:
         raise ImportError(f"无法导入模块 scenes.{module_name}: {e}")
 
+
 def prepare_scene_params(scene_name, row_data, doc_dir, test_mode='local', out_dir=None):
     """
     根据场景准备相应的参数
@@ -113,7 +114,7 @@ def prepare_scene_params(scene_name, row_data, doc_dir, test_mode='local', out_d
             "answer": row_data["answer"],
             "result": row_data["result"],
             "dimension": row_data["dimension"],
-            "memory_retrieval_topk": row_data.get("MemoryRetrievalTop10", "") if test_mode == "cloud" else row_data.get("MemoryRetrievalTop3", ""),
+            "memory_retrieval_topk": row_data.get("MemoryRetrievalTop10", "no data") if test_mode == "cloud" else row_data.get("MemoryRetrievalTop3", "no data"),
             "session_id_list": row_data.get("session_id_list", ""), #如果没有这列就置为空值
             "root_path": out_dir,
             "test_mode": test_mode

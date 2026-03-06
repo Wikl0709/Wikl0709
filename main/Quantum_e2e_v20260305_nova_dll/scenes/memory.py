@@ -79,7 +79,6 @@ IMPORTANT: URL validation has absolute priority and must be performed before any
 
 Step 1 — Strict URL Validation (Highest Priority):
 If the real_answer contains any complete URL (i.e., starting with "http://" or "https://"):
-
 1. The response MUST contain the EXACT same URL string, matched character-by-character.
 2. Domain-only matches, partial URLs, reformatted URLs, inferred URLs, or descriptive references are NOT acceptable.
 3. If the exact URL string is absent or differs in any way:
@@ -87,14 +86,32 @@ If the real_answer contains any complete URL (i.e., starting with "http://" or "
    - Provide a brief justification.
    - Terminate the evaluation immediately.
    - Do NOT perform any semantic or contextual analysis.
+**Example Reference**:
+- Q: "Which site has recipes?" | real_answer: "https://home.meishi.com." | response: [home.meishi.com.] -> **Score = 0** (Not provide the complete URL "https://home.meishi.com.")
+- Q: "Which website hosts programming resources?" | real_answer: "https://github.com/" | response: [GitHub] -> **Score = 0** (Not provide the complete URL, only domain name)
 
 Step 2 — Semantic Consistency Evaluation:
 Proceed to this step ONLY if Step 1 is fully satisfied.
 Scoring criteria:
-1) Output Score = 1 if the core meaning of the response matches the real_answer.
-   Differences in wording or minor details are allowed.
-2) Output Score = 0 if the core meaning differs, the response is irrelevant,
-   or key information is missing.
+1) Output Score = 1:if the response core meaning of the response matches the real_answer.
+   Differences in wording/Conceptually equivalent expressions(e.g., work report presentation = work report PPT)  or minor details are allowed.
+2) Output Score = 0:if the response contradicts the real_answer, or the response provides only real_answer partial information. If the real_answer contains a negation PLUS any explicit alternative or additional factual statement, the response MUST address BOTH; otherwise Score = 0.
+3)If the real_answer contains NO time information, any added time references MUST be ignored for scoring.
+  If the real_answer explicitly specifies the time granularity (e.g., real_answer provides only a month without a specific day or year), the response MUST NOT add finer or broader time details; otherwise Score = 0.
+4)ID card and passport shall be regarded as the same type of identification document.
+5) Special case (negative existence check ONLY):
+   -If the real_answer contains ANY concrete factual value (including an explicit alternative fact), a response that only expresses uncertainty, lack of information, or inability to determine MUST be scored 0.
+   This Specialrule applies ONLY if ALL conditions below are met(If the real_answer contains any concrete factual value, this Special case MUST NOT be applied):
+   - The question is a pure existence-check question (yes/no about whether something exists).
+   - The real_answer is explicitly contains only negation(e.g., "no", "not exist"), with NO additional facts, NO reasons.
+   - The response indicates that the attribute is NOT mentioned, NOT specified, unknown, or cannot be determined.
+   In this case, Output Score = 1.
+   
+**Example Reference**:
+- Q: "Can I go to the flower field with Andy?" | real_answer: "No, Andy is allergic to pollen." | response: [No] -> **Score = 0** (because it omits the real_answer key alternative fact "Andy is allergic to pollen.)
+- Q: "Do I have any memories of gym?" | real_answer: "NO." | response: [I do not have this information/data.] -> **Score = 1** (The real_answer is a 'negative conclusion' (explicitly states real_answer='NO' = no gym memories exist); 
+The response ('no information') indicates the model cannot find any gym-related memories, which directly supports real_answer that 'gym memories do not exist' → consistent, so Score=1.")
+
 
 Output requirements:
 - You MUST follow the exact output format below.
@@ -280,21 +297,23 @@ If the answer contains any complete URL (i.e., starting with "http://" or "https
 1. The matched_content MUST contain the EXACT same URL string, matched character-by-character.
 2. Domain-only matches, partial URLs, reformatted URLs, inferred URLs, or descriptive references are NOT acceptable.
 3. If the exact URL string is absent or differs in any way:
-   - You MUST assign Score = 0.
+   - You MUST output "no".
    - Provide a brief justification.
    - Terminate the evaluation immediately.
    - Do NOT perform any semantic or contextual analysis.
+**Example Reference**:
+- Q: "Which site has recipes?" | answer: "https://home.meishi.com." | matched_content: [home.meishi.com.]-> **output "no"** (Not provide the complete URL "https://home.meishi.com.")
+- Q: "Which website hosts programming resources?" | answer: "https://github.com/" | matched_content: [GitHub] -> **output "no"** (Not provide the complete URL, only domain name)
 
 Step 2 — semantic analysis decision criteria:
 Proceed to this step ONLY if Step 1 is fully satisfied.
 1) Exact wording match is NOT required. Semantic meaning, facts, and conclusion consistency are required.
 2) If matched_content explicitly contains, or directly supports (via straightforward inference) the answer, output "yes".
-3) If information is missing, irrelevant, contradictory, or cannot support the answer, output "no".
+3) If matched_content information is missing, irrelevant, contradictory, or cannot support the answer, output "no".
 4) Special case (negative attribute check):
    If the question asks whether an attribute/object/structure exists, and matched_content provides a complete or reasonable
    description of the object but does not mention that attribute, AND the answer is negative (e.g., "no/none/does not exist"),
    then output "yes" because the content supports the negative conclusion.
-
 
 Do not use external knowledge. Base the judgment strictly on matched_content.
 """
@@ -612,8 +631,8 @@ Judgment Rules:
 - Q: "My company's gym?" | GT: "No." | Pre: ["Power Pulse Gym" (generic)] -> **Pass** (No attribution = No relevant info = Matches No)
 - Q: "Is store open morning?" | GT: "No" (implied: it's open at other times) | Pre: [] -> **Fail** (No info cannot judge hours, cannot derive No)
 - Q: "Go to flower sea?" | GT: "No, Andy is allergic." | Pre: [Irrelevant] -> **Fail** (Cannot derive allergy reason)
-- Q: "Which site has recipes?" | GT: "https://home.meishi.com." | Pre: [home.meishi.com.] -> **Fail** (Not provide the complete URL)
-
+- Q: "Which site has recipes?" | GT: "https://home.meishi.com." | Pre: [home.meishi.com.] -> **Fail** (Not provide the complete URL "https://home.meishi.com.")
+- Q: "Which website hosts programming resources?" | GT: "https://github.com/" | Pre: [GitHub] -> **Fail** (Not provide the complete URL, only domain name)
 
 Note: Pre might describe in third person (User/He/She), please treat as user's memory.
 Must strictly return in the following format, no extra content allowed:
@@ -708,13 +727,14 @@ def main(row: Dict) -> Dict:
     )
 
 
-    memory_retrieval_result = ""    
-    memory_retrieval_reason = ""
-
     if test_mode == "cloud":
-        memory_retrieval_result, memory_retrieval_reason = verify_memory_retrieval(
-            question=question,
-            gt_answer=real_answer,
+        if memory_retrieval_topk == "no data":
+            memory_retrieval_result = 0
+            memory_retrieval_reason = "No retrieval data provided for evaluation"
+        else:
+            memory_retrieval_result, memory_retrieval_reason = verify_memory_retrieval(
+                question=question,
+                gt_answer=real_answer,
             retrieval=memory_retrieval_topk,
             test_mode=test_mode
         )
