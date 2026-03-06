@@ -925,8 +925,9 @@ class MultimodalAPI:
                 
                 # 如果还有失败的 case，且不是最后一轮，则在轮次之间等待 5 分钟
                 if round_had_failure and round_idx < max_rerun_rounds - 1:
-                    logger.info("本轮重跑仍有失败case，等待5分钟后进行下一轮重跑...")
-                    time.sleep(300)
+                    logger.info("本轮重跑仍有失败case，等待1分钟后进行下一轮重跑...")
+                    # time.sleep(300)
+                    time.sleep(60)
         # if need_rerun_indices:
         #     logger.info(f"发现 {len(need_rerun_indices)} 个需要重跑的错误case: {need_rerun_indices}")
             

@@ -551,8 +551,8 @@ class QuantumClientManager:
                             # 添加：如果任务失败，返回失败原因
                             elif status == "failed":
                                 logger.error(f"Job {job_id} failed: {result['data']}")
-                                logger.info(f"Job{job_id} 任务失败，等待3分钟后执行下一条case")
-                                time.sleep(180)  # 任务失败后等待3分钟
+                                logger.info(f"Job{job_id} 任务失败，等待30秒后执行下一条case")
+                                time.sleep(30)  # 任务失败后等待30秒
                                 # 返回包含失败信息的字典，包含失败的具体原因
                                 return {
                                     "status": "failed",
